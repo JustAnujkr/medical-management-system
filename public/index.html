@@ -1,0 +1,697 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MedVault | Medical Store Management</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- HERO -->
+
+        <header class="hero">
+
+            <span class="badge-pill">
+                DATABASE MANAGEMENT SYSTEM PROJECT
+            </span>
+
+            <h1 class="hero-title">
+                MEDICAL STORE MANAGEMENT
+            </h1>
+
+            <p class="hero-sub">
+                Interactive medicine inventory, stock and billing system powered by a database.
+            </p>
+
+        </header>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="tabs">
+
+            <button type="button" class="nav active" data-view="dashboard">
+                Dashboard
+            </button>
+
+            <button type="button" class="nav" data-view="medicines">
+                Medicines
+            </button>
+
+            <button type="button" class="nav" data-view="stock">
+                Stock movement
+            </button>
+
+            <button type="button" class="nav" data-view="sales">
+                Sales
+            </button>
+
+            <button type="button" class="nav" data-view="suppliers">
+                Suppliers
+            </button>
+
+            <span class="live">
+                <i></i> DATABASE ONLINE
+            </span>
+
+        </nav>
+
+
+        <!-- CURRENT MODULE TITLE -->
+
+        <div class="module-bar">
+
+            <span class="num-badge">DB</span>
+
+            <h2 id="page-title">Dashboard</h2>
+
+        </div>
+
+
+        <main class="main">
+
+            <!-- DASHBOARD -->
+
+            <section id="dashboard-view" class="view">
+
+                <div class="stats">
+
+                    <article class="stat">
+                        <span>TOTAL MEDICINES</span>
+                        <strong id="totalMedicines">—</strong>
+                        <small>Medicine records</small>
+                    </article>
+
+                    <article class="stat">
+                        <span>TOTAL STOCK UNITS</span>
+                        <strong id="totalStock">—</strong>
+                        <small>Across all batches</small>
+                    </article>
+
+                    <article class="stat warning">
+                        <span>LOW STOCK</span>
+                        <strong id="lowStock">—</strong>
+                        <small>At or below minimum level</small>
+                    </article>
+
+                    <article class="stat danger">
+                        <span>EXPIRED BATCHES</span>
+                        <strong id="expired">—</strong>
+                        <small>Do not dispense</small>
+                    </article>
+
+                    <article class="stat orange">
+                        <span>EXPIRING IN 30 DAYS</span>
+                        <strong id="expiringSoon">—</strong>
+                        <small>Review these batches</small>
+                    </article>
+
+                    <article class="stat">
+                        <span>TODAY'S SALES</span>
+                        <strong id="todaySales">—</strong>
+                        <small>Recorded sales total</small>
+                    </article>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+
+                        <div class="heading-left">
+
+                            <span class="num-badge">01</span>
+
+                            <div>
+                                <h3>Expiry &amp; stock watch</h3>
+                                <p>Items that need attention</p>
+                            </div>
+
+                        </div>
+
+                        <div class="heading-actions">
+
+                            <button type="button" class="primary"
+                                onclick="openMedicineForm()">
+                                + Add medicine
+                            </button>
+
+                            <button type="button" class="secondary"
+                                onclick="showView('medicines')">
+                                View inventory
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div id="attention-list" class="table-wrap"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- MEDICINES -->
+
+            <section id="medicines-view" class="view hidden">
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+
+                        <div class="heading-left">
+
+                            <span class="num-badge">01</span>
+
+                            <div>
+                                <h3>Medicine inventory</h3>
+                                <p>Manage medicine batches, pricing and expiry dates.</p>
+                            </div>
+
+                        </div>
+
+                        <button type="button" class="primary"
+                            onclick="openMedicineForm()">
+                            + Add medicine
+                        </button>
+
+                    </div>
+
+                    <div class="toolbar">
+
+                        <input
+                            id="medicineSearch"
+                            placeholder="Search medicine, generic name or batch..."
+                            oninput="renderMedicines()">
+
+                        <span id="medicineCount" class="muted"></span>
+
+                    </div>
+
+                    <div id="medicine-table" class="table-wrap"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- STOCK MOVEMENT -->
+
+            <section id="stock-view" class="view hidden">
+
+                <div class="split">
+
+                    <div class="panel form-panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">01</span>
+
+                                <div>
+                                    <h3>Update stock</h3>
+                                    <p>Record stock received or removed</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <form id="stockForm" class="form-grid">
+
+                            <label class="wide">
+                                Medicine batch
+
+                                <select name="medicine_id" id="stockMedicine" required>
+                                </select>
+
+                            </label>
+
+
+                            <label>
+                                Movement type
+
+                                <select name="movement_type">
+                                    <option value="IN">Stock IN</option>
+                                    <option value="OUT">Stock OUT</option>
+                                </select>
+
+                            </label>
+
+
+                            <label>
+                                Quantity
+
+                                <input name="quantity" type="number" min="1" required>
+                            </label>
+
+
+                            <label class="wide">
+                                Remarks
+
+                                <input name="note" placeholder="e.g. New purchase / damaged stock">
+                            </label>
+
+
+                            <div class="wide">
+
+                                <button type="submit" class="primary block">
+                                    Save stock movement
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">02</span>
+
+                                <div>
+                                    <h3>Recent movements</h3>
+                                    <p>Latest stock in and out records</p>
+                                </div>
+
+                            </div>
+
+                            <span class="live">
+                                <i></i> LIVE LOG
+                            </span>
+
+                        </div>
+
+                        <div id="movement-table" class="table-wrap"></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SALES -->
+
+            <section id="sales-view" class="view hidden">
+
+                <div class="split">
+
+                    <div class="panel form-panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">01</span>
+
+                                <div>
+                                    <h3>New sale</h3>
+                                    <p>Stock is deducted automatically</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <form id="saleForm" class="form-grid">
+
+                            <label>
+                                Customer name
+
+                                <input name="customer_name"
+                                    placeholder="Walk-in Customer">
+                            </label>
+
+
+                            <label>
+                                Customer phone
+
+                                <input name="customer_phone"
+                                    placeholder="Optional">
+                            </label>
+
+
+                            <label class="wide">
+                                Medicine batch
+
+                                <select id="saleMedicine" required>
+                                </select>
+
+                            </label>
+
+
+                            <label>
+                                Quantity
+
+                                <input id="saleQuantity"
+                                    type="number"
+                                    min="1"
+                                    value="1"
+                                    required>
+                            </label>
+
+
+                            <label>
+                                Unit price (₹)
+
+                                <input id="salePrice"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    required>
+                            </label>
+
+
+                            <div class="wide">
+
+                                <button type="button" class="add-btn"
+                                    onclick="addSaleItem()">
+                                    + Add item to bill
+                                </button>
+
+                            </div>
+
+
+                            <div class="wide" id="saleCart"></div>
+
+
+                            <div class="wide sale-total" id="saleTotal">
+                                Total: ₹0.00
+                            </div>
+
+
+                            <div class="wide">
+
+                                <button type="submit" class="primary block">
+                                    Complete sale
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">02</span>
+
+                                <div>
+                                    <h3>Recent sales</h3>
+                                    <p>Billing history</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div id="sales-table" class="table-wrap"></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SUPPLIERS -->
+
+            <section id="suppliers-view" class="view hidden">
+
+                <div class="split">
+
+                    <div class="panel form-panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">01</span>
+
+                                <div>
+                                    <h3>Add supplier</h3>
+                                    <p>Maintain your supplier directory</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <form id="supplierForm" class="form-grid">
+
+                            <label class="wide">
+                                Supplier name
+
+                                <input name="supplier_name" required>
+                            </label>
+
+
+                            <label class="wide">
+                                Phone
+
+                                <input name="phone">
+                            </label>
+
+
+                            <label class="wide">
+                                Email
+
+                                <input name="email" type="email">
+                            </label>
+
+
+                            <label class="wide">
+                                Address
+
+                                <input name="address">
+                            </label>
+
+
+                            <div class="wide">
+
+                                <button type="submit" class="primary block">
+                                    Save supplier
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="panel">
+
+                        <div class="panel-heading">
+
+                            <div class="heading-left">
+
+                                <span class="num-badge">02</span>
+
+                                <div>
+                                    <h3>Supplier directory</h3>
+                                    <p>All registered suppliers</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div id="supplier-table" class="table-wrap"></div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            <h3>MEDICAL STORE MANAGEMENT</h3>
+
+            <p>Database Management System Project</p>
+
+        </footer>
+
+    </div>
+
+
+    <!-- ADD / EDIT MEDICINE DIALOG -->
+
+    <dialog id="medicineDialog">
+
+        <form id="medicineForm">
+
+            <div class="dialog-head">
+
+                <div>
+                    <div class="eyebrow">INVENTORY RECORD</div>
+                    <h2 id="dialogTitle">Add medicine</h2>
+                </div>
+
+                <button type="button" class="close"
+                    onclick="document.getElementById('medicineDialog').close()">
+                    ×
+                </button>
+
+            </div>
+
+
+            <input type="hidden" name="medicine_id">
+
+
+            <div class="form-grid two">
+
+                <label>
+                    Medicine name *
+
+                    <input name="medicine_name" required>
+                </label>
+
+
+                <label>
+                    Generic name
+
+                    <input name="generic_name">
+                </label>
+
+
+                <label>
+                    Category
+
+                    <input name="category"
+                        placeholder="Tablet, Syrup, Injection...">
+                </label>
+
+
+                <label>
+                    Manufacturer
+
+                    <input name="manufacturer">
+                </label>
+
+
+                <label>
+                    Batch number *
+
+                    <input name="batch_number" required>
+                </label>
+
+
+                <label>
+                    Supplier
+
+                    <select name="supplier_id" id="medicineSupplier">
+
+                        <option value="">No supplier</option>
+
+                    </select>
+                </label>
+
+
+                <label>
+                    Manufacturing date *
+
+                    <input name="mfg_date" type="date" required>
+                </label>
+
+
+                <label>
+                    Expiry date *
+
+                    <input name="exp_date" type="date" required>
+                </label>
+
+
+                <label>
+                    Purchase price (₹)
+
+                    <input name="purchase_price"
+                        type="number" min="0" step=".01" value="0">
+                </label>
+
+
+                <label>
+                    MRP (₹)
+
+                    <input name="mrp"
+                        type="number" min="0" step=".01" value="0">
+                </label>
+
+
+                <label>
+                    Stock quantity
+
+                    <input name="stock"
+                        type="number" min="0" value="0">
+                </label>
+
+
+                <label>
+                    Minimum stock alert
+
+                    <input name="min_stock"
+                        type="number" min="0" value="10">
+                </label>
+
+            </div>
+
+
+            <div class="dialog-actions">
+
+                <button type="button" class="secondary"
+                    onclick="document.getElementById('medicineDialog').close()">
+                    Cancel
+                </button>
+
+                <button type="submit" class="primary">
+                    Save medicine
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <div id="toast" role="status"></div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
